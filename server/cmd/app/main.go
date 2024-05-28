@@ -1,24 +1,24 @@
 package main
 
 import (
-  "fmt"
-  "github.com/JLavrin/mapp.git/server/internal/util"
-  "github.com/JLavrin/mapp.git/server/internal/websocket"
-  "log"
-  "net/http"
-  "strconv"
+	"fmt"
+	"github.com/JLavrin/mapp.git/server/internal/util"
+	"github.com/JLavrin/mapp.git/server/internal/websocket"
+	"log"
+	"net/http"
+	"strconv"
 )
 
 func main() {
-  util.LoadEnv()
+	util.LoadEnv()
 
-  port := util.GetEnv("PORT", 8080)
+	port := util.GetEnv("PORT", 8080)
 
-  http.HandleFunc("/ws", websocket.Handler)
+	http.HandleFunc("/ws", websocket.Handler)
 
-  portStr := strconv.Itoa(port)
+	portStr := strconv.Itoa(port)
 
-  fmt.Printf("[Server started] available at http://localhost:%s\n", portStr)
+	fmt.Printf("[Server started] available at http://localhost:%s\n", portStr)
 
-  log.Fatal(http.ListenAndServe(":"+portStr, nil))
+	log.Fatal(http.ListenAndServe(":"+portStr, nil))
 }
