@@ -8,9 +8,9 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/ws", websocket.Handler)
+	port :=
 
-	port := ":8080"
+		http.HandleFunc("/ws", websocket.Handler)
 
 	fmt.Printf("[Server started] available at http://localhost%s\n", port)
 
