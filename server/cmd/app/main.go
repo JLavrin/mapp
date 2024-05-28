@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -44,7 +45,7 @@ func main() {
 		}
 	})
 
-	log.Println("[] %s", "1")
+	fmt.Printf("[] %s", "1")
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
