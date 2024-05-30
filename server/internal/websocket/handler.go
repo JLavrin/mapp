@@ -14,8 +14,9 @@ var upgrader = websocket.Upgrader{
 }
 
 type Res struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
+	Code  int    `json:"code"`
+	Data  any    `json:"data"`
+	Event string `json:"event"`
 }
 
 type Req struct {
@@ -43,10 +44,32 @@ func handle(conn *websocket.Conn) {
 		}
 	}()
 
+	b, err := json.Marshal(Res{
+		Code: 200,
+		Data: map[string]interface{}{
+			"message": "Connected",
+		},
+		Event: "connected",
+	})
+
+	if err != nil {
+		log.Println("[Websocket] MArachsal connected message")
+	}
+
+	err = conn.WriteMessage(websocket.TextMessage, b)
+
+	if err != nil {
+		log.Println("[Websocket] Error connected message")
+	}
+
 	for {
 		select {
 		case message := <-service.VehicleUpdates:
-			b, err := json.Marshal(message)
+			b, err := json.Marshal(Res{
+				Code:  200,
+				Data:  message,
+				Event: "vehicles_update",
+			})
 			if err != nil {
 				log.Println("[Websocket] Error marshalling message")
 				continue

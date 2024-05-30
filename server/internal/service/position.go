@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/JLavrin/mapp.git/server/internal/util"
 	"time"
 )
@@ -30,23 +31,26 @@ type Res struct {
 }
 
 func Position() {
-	ticker := time.NewTicker(15 * time.Second)
+	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
 
-	var lastUpdate Res
+	//var lastUpdate Res
 
 	for {
 		select {
 		case <-ticker.C:
+			fmt.Println("Requesting new position")
 			res := util.Request[Res](util.Req{
 				Url:    "https://ckan2.multimediagdansk.pl/gpsPositions?v=2",
 				Method: "GET",
 			})
+			fmt.Println("New position")
+			//if res.LastUpdate != lastUpdate.LastUpdate {
+			//	lastUpdate = res
+			//	VehicleUpdates <- res
+			//}
+			VehicleUpdates <- res
 
-			if res.LastUpdate != lastUpdate.LastUpdate {
-				lastUpdate = res
-				VehicleUpdates <- res
-			}
 		}
 	}
 }
