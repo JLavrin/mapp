@@ -2,6 +2,7 @@ package websocket
 
 import (
 	"encoding/json"
+	"github.com/JLavrin/mapp.git/server/internal/service"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -43,33 +44,19 @@ func handle(conn *websocket.Conn) {
 	}()
 
 	for {
-		_, message, err := conn.ReadMessage()
-
-		if err != nil {
-			log.Println("[Websocket] Message read error")
-
-			r := Res{
-				Code:    400,
-				Message: "Message decode error",
+		select {
+		case message := <-service.VehicleUpdates:
+			b, err := json.Marshal(message)
+			if err != nil {
+				log.Println("[Websocket] Error marshalling message")
+				continue
 			}
 
-			b := toJson(&r)
-
-			conn.WriteMessage(websocket.TextMessage, b)
-			return
+			err = conn.WriteMessage(websocket.TextMessage, b)
+			if err != nil {
+				log.Println("[Websocket] Error sending message")
+				return
+			}
 		}
-
-		conn.WriteMessage(websocket.TextMessage, []byte(message))
 	}
-}
-
-func toJson(msg *Res) []byte {
-	b, err := json.Marshal(msg)
-
-	if err != nil {
-		log.Printf("[toJson] Enconding error")
-		return nil
-	}
-
-	return b
 }

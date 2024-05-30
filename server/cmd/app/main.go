@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/JLavrin/mapp.git/server/internal/service"
 	"github.com/JLavrin/mapp.git/server/internal/util"
 	"github.com/JLavrin/mapp.git/server/internal/websocket"
 	"log"
@@ -13,6 +14,7 @@ func main() {
 	util.LoadEnv()
 
 	port := util.GetEnv("PORT", 8080)
+	service.StartUpdating()
 
 	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
 		writer.Write([]byte("App running correctly."))
