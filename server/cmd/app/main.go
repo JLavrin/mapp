@@ -14,6 +14,10 @@ func main() {
 
 	port := util.GetEnv("PORT", 8080)
 
+	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
+		writer.Write([]byte("App running correctly."))
+	})
+
 	http.HandleFunc("/ws", websocket.Handler)
 
 	portStr := strconv.Itoa(port)

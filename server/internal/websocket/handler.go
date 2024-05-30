@@ -2,11 +2,9 @@ package websocket
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
-	"time"
 )
 
 var upgrader = websocket.Upgrader{
@@ -17,6 +15,10 @@ var upgrader = websocket.Upgrader{
 type Res struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
+}
+
+type Req struct {
+	LineId string `json:"lineId"`
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +44,6 @@ func handle(conn *websocket.Conn) {
 
 	for {
 		_, message, err := conn.ReadMessage()
-		start := time.Now()
 
 		if err != nil {
 			log.Println("[Websocket] Message read error")
@@ -58,9 +59,7 @@ func handle(conn *websocket.Conn) {
 			return
 		}
 
-		end := time.Now()
-		r := []byte(fmt.Sprintf("U sent: %s => %s", message, end.Sub(start)))
-		conn.WriteMessage(websocket.TextMessage, r)
+		conn.WriteMessage(websocket.TextMessage, []byte(message))
 	}
 }
 
